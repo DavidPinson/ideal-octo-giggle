@@ -1,43 +1,47 @@
-﻿using System.IO;
-using System.Windows;
-using Markdig;
-using Markdig.Wpf;
+﻿using ReactiveUI;
+using yawn.ViewModel;
 
 namespace yawn
 {
   /// <summary>
   /// Interaction logic for MainWindow.xaml
   /// </summary>
-  public partial class MainWindow : Window
-    {
-    private bool useExtensions = true;
+  public partial class MainWindow : IActivatableView
+  {
+    public MainViewModel MainViewModel { get; protected set; }
 
     public MainWindow()
     {
       InitializeComponent();
-      Loaded += OnLoaded;
-    }
 
-    private void OnLoaded(object sender, RoutedEventArgs e)
-    {
-      Viewer.Markdown = File.ReadAllText("Documents/Markdig-readme.md");
-    }
+      this.MainViewModel = new MainViewModel();
+      this.DataContext = this.MainViewModel;
 
-    private void OpenHyperlink(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
-    {
-      //Process.Start(e.Parameter.ToString());
-      Viewer.Markdown = File.ReadAllText(e.Parameter.ToString());
-    }
+      this.WhenActivated(
+        dispose =>
+        {
+          // d(CommonInteractions.CheckToProceed.RegisterHandler(
+          //     async interaction =>
+          //     {
+          //       MessageDialogResult shouldContinue =
+          //                         await
+          //                             this.ShowMessageAsync(
+          //                                 "Please confirm",
+          //                                 interaction.Input,
+          //                                 MessageDialogStyle.AffirmativeAndNegative);
 
-    private void ClickOnImage(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
-    {
-      MessageBox.Show($"URL: {e.Parameter}");
-    }
+          //       interaction.SetOutput(shouldContinue == MessageDialogResult.Affirmative);
+          //     }));
 
-    private void ToggleExtensionsButton_OnClick(object sender, RoutedEventArgs e)
-    {
-      useExtensions = !useExtensions;
-      Viewer.Pipeline = useExtensions ? new MarkdownPipelineBuilder().UseSupportedExtensions().Build() : new MarkdownPipelineBuilder().Build();
+          // d(CommonInteractions.GetStringResponse.RegisterHandler(
+          //     async interaction =>
+          //     {
+          //       string input = await this.ShowInputAsync("Please confirm", interaction.Input);
+          //       interaction.SetOutput(input);
+          //     }));
+
+          dispose(this.WhenAnyValue(x => x.MainViewModel).BindTo(this, x => x.DataContext));
+        });
     }
   }
 }

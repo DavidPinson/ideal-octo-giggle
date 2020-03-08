@@ -1,0 +1,14 @@
+<rxui:ReactiveUserControl
+    x:Class="yawn.View.EditView"
+    x:TypeArguments="vm:EditViewModel"
+    xmlns:rxui="http://reactiveui.net"
+    xmlns:vm="clr-namespace:yawn.ViewModel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d">
+    
+    <TextBlock x:Name="PathTextBlock" Foreground="White" Margin="10" />
+
+</rxui:ReactiveUserControl>
