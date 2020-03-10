@@ -6,14 +6,73 @@
   xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
   xmlns:rxui="http://reactiveui.net"
   xmlns:local="clr-namespace:yawn"
+  xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
   x:Name="YawnMainWindow"
-  Title="YAWN: Yet Another Wiki Note"
+  Title="YAWN"
   Width="800"
   Height="600"
   mc:Ignorable="d">
 
-  <rxui:RoutedViewHost HorizontalContentAlignment="Stretch"
-    VerticalContentAlignment="Stretch"
-    Router="{Binding Router}" />
+  <Grid ShowGridLines="False">
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <Grid.RowDefinitions>
+      <RowDefinition Height="30" />
+      <RowDefinition Height="30" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <StackPanel Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="4"
+      Orientation="Horizontal" 
+      HorizontalAlignment ="Center">
+      <Button>
+        <iconPacks:PackIconMaterialDesign Kind="Home" />
+        <!--<TextBlock Text="H" />-->
+      </Button>
+      <Button>      
+        <iconPacks:PackIconMaterialDesign Kind="NavigateBefore" />
+        <!--<TextBlock Text="L" />-->
+      </Button>
+      <Button>
+        <iconPacks:PackIconMaterialDesign Kind="NavigateNext" />
+        <!--<TextBlock Text="R" />-->
+      </Button>
+      <Button>
+        <iconPacks:PackIconMaterialDesign Kind="Search" />
+        <!--<TextBlock Text="SEARCH" />-->
+      </Button>
+      <Button>
+        <iconPacks:PackIconMaterialDesign Kind="Search" />
+        <!--<TextBlock Text="S" />-->
+      </Button>
+      <Button>
+        <iconPacks:PackIconMaterialDesign Kind="Settings" />
+        <!--<TextBlock Text="O" />-->
+      </Button>
+    </StackPanel>
+
+    <StackPanel Grid.Column="5" Grid.Row="0" Grid.RowSpan="2"
+      HorizontalAlignment ="Center"
+      VerticalAlignment = "Center">
+      <Button>
+        <iconPacks:PackIconMaterialDesign Kind="Edit" />
+        <!--<TextBlock Text="E" />-->
+      </Button>
+    </StackPanel>
+
+    <rxui:RoutedViewHost Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="6"
+      HorizontalContentAlignment="Stretch"
+      VerticalContentAlignment="Stretch"
+      Router="{Binding Router}" />
+
+  </Grid>
 
 </controls:MetroWindow>

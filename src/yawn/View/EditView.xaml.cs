@@ -10,7 +10,7 @@ namespace yawn.View
 
       this.WhenActivated(dispose =>
       {
-          dispose(this.WhenAnyValue(x => x.ViewModel.UrlPathSegment).BindTo(this, x => x.PathTextBlock.Text));
+        dispose(this.WhenAnyValue(x => x.ViewModel.UrlPathSegment).BindTo(this, x => x.PathTextBlock.Text));
       });
     }
   }
