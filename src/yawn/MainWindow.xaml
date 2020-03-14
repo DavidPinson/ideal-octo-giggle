@@ -25,16 +25,16 @@
     </Grid.ColumnDefinitions>
 
     <Grid.RowDefinitions>
-      <RowDefinition Height="30" />
-      <RowDefinition Height="30" />
+      <RowDefinition Height="48" />
+      <RowDefinition Height="48" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
     <StackPanel Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="4"
       Orientation="Horizontal" 
       HorizontalAlignment ="Center">
-      <Button>
-        <iconPacks:PackIconMaterialDesign Kind="Home" />
+      <Button Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Width="48">
+        <iconPacks:PackIconMaterialDesign Kind="Home" Height="48" />
         <!--<TextBlock Text="H" />-->
       </Button>
       <Button>      
