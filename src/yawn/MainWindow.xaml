@@ -46,8 +46,9 @@
         <!--<TextBlock Text="R" />-->
       </Button>
       <Button>
-        <iconPacks:PackIconMaterialDesign Kind="Search" />
+        <!--<iconPacks:PackIconMaterialDesign Kind="Search" />-->
         <!--<TextBlock Text="SEARCH" />-->
+        <TextBox Width="150"/>
       </Button>
       <Button>
         <iconPacks:PackIconMaterialDesign Kind="Search" />
