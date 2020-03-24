@@ -7,8 +7,29 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:markdig="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
     mc:Ignorable="d">
     
-    <TextBlock x:Name="PathTextBlock" Foreground="black" Margin="10" />
+    <Grid x:Name="test" ShowGridLines="false">
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="3*" /> 
+        <ColumnDefinition Width="7*" />
+      </Grid.ColumnDefinitions>
+  
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <DockPanel Grid.Column="0" Grid.Row="0">
+        <Button x:Name="GoNextButton" Content="Go to first" />
+        <markdig:MarkdownViewer x:Name="MenuViewer"/>
+      </DockPanel>
+
+      <!-- <DockPanel Grid.Column="1" Grid.Row="0"> -->
+        <!-- <markdig:MarkdownViewer x:Name="NoteViewer"/> -->
+      <!-- </DockPanel> -->
+
+    </Grid>
 
 </rxui:ReactiveUserControl>

@@ -8,10 +8,11 @@
   xmlns:local="clr-namespace:yawn"
   xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
   x:Name="YawnMainWindow"
-  Title="YAWN"
-  Width="800"
-  Height="600"
-  mc:Ignorable="d">
+  Title="Yet Another Wiki Note"
+  Width="1000"
+  Height="800"
+  mc:Ignorable="d"  
+  TitleCharacterCasing="Normal" >
 
   <Grid ShowGridLines="False">
 
@@ -32,40 +33,31 @@
 
     <StackPanel Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="4"
       Orientation="Horizontal" 
-      HorizontalAlignment ="Center">
-      <Button Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Width="48">
-        <iconPacks:PackIconMaterialDesign Kind="Home" Height="48" />
-        <!--<TextBlock Text="H" />-->
+      HorizontalAlignment ="Center" >
+      <Button x:Name="HomeButton" Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Height="28" Margin="1">
+        <iconPacks:PackIconMaterialDesign Kind="Home" />
       </Button>
-      <Button>      
+      <Button x:Name="NavigateBeforeButton" Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Height="28" Margin="1">
         <iconPacks:PackIconMaterialDesign Kind="NavigateBefore" />
-        <!--<TextBlock Text="L" />-->
       </Button>
-      <Button>
+      <Button x:Name="NavigateNextButton" Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Height="28" Margin="1">
         <iconPacks:PackIconMaterialDesign Kind="NavigateNext" />
-        <!--<TextBlock Text="R" />-->
       </Button>
-      <Button>
-        <!--<iconPacks:PackIconMaterialDesign Kind="Search" />-->
-        <!--<TextBlock Text="SEARCH" />-->
-        <TextBox Width="150"/>
-      </Button>
-      <Button>
+      <TextBox x:Name="SearchTextBox" Style="{StaticResource MahApps.Styles.TextBox}" Width="250" Height="28" Margin="1">
+      </TextBox>
+      <Button x:Name="SearchButton" Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Height="28" Margin="1">
         <iconPacks:PackIconMaterialDesign Kind="Search" />
-        <!--<TextBlock Text="S" />-->
       </Button>
-      <Button>
+      <Button x:Name="SettingsButton" Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Height="28" Margin="1">
         <iconPacks:PackIconMaterialDesign Kind="Settings" />
-        <!--<TextBlock Text="O" />-->
       </Button>
     </StackPanel>
 
     <StackPanel Grid.Column="5" Grid.Row="0" Grid.RowSpan="2"
       HorizontalAlignment ="Center"
       VerticalAlignment = "Center">
-      <Button>
+      <Button x:Name="EditButton" Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Height="28">
         <iconPacks:PackIconMaterialDesign Kind="Edit" />
-        <!--<TextBlock Text="E" />-->
       </Button>
     </StackPanel>
 

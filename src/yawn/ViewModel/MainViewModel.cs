@@ -1,5 +1,7 @@
 using ReactiveUI;
 using Splat;
+using yawn.Service;
+using yawn.Service.Interface;
 using yawn.View;
 
 namespace yawn.ViewModel
@@ -29,9 +31,19 @@ namespace yawn.ViewModel
       Locator.CurrentMutable.InitializeReactiveUI();
 
       Locator.CurrentMutable.RegisterConstant<IScreen>(this);
+      Locator.CurrentMutable.RegisterConstant<INoteService>(new NoteService());
 
-      Locator.CurrentMutable.Register<EditViewModel>(() => new EditViewModel(Locator.Current.GetService<IScreen>()));
-      Locator.CurrentMutable.Register<NoteViewModel>(() => new NoteViewModel(Locator.Current.GetService<IScreen>()));
+      Locator.CurrentMutable.Register<EditViewModel>(() =>
+      {
+        return new EditViewModel(Locator.Current.GetService<IScreen>(), Locator.Current.GetService<INoteService>());
+      });
+      Locator.CurrentMutable.Register<NoteViewModel>(() => 
+      {
+        return new NoteViewModel(Locator.Current.GetService<IScreen>(), Locator.Current.GetService<INoteService>());
+      });
+
+      Locator.CurrentMutable.Register<IViewFor<EditViewModel>>(() => new EditView());
+      Locator.CurrentMutable.Register<IViewFor<NoteViewModel>>(() => new NoteView());
 
       //   dependencyResolver.RegisterConstant<IRepositoryViewModelFactory>(new DefaultRepositoryViewModelFactory());
       //   dependencyResolver.RegisterConstant<IRepositoryFactory>(new DefaultRepositoryFactory());
@@ -40,8 +52,7 @@ namespace yawn.ViewModel
 
       //   dependencyResolver.Register<MainViewModel, IMainViewModel>();
       //   dependencyResolver.RegisterConstant<IActivationForViewFetcher>(new DispatcherActivationForViewFetcher());
-      Locator.CurrentMutable.Register<IViewFor<EditViewModel>>(() => new EditView());
-      Locator.CurrentMutable.Register<IViewFor<NoteViewModel>>(() => new NoteView());
+      
       //   dependencyResolver.Register<IViewFor<IBranchViewModel>>(() => new BranchesView());
       //   dependencyResolver.Register<IViewFor<IRefLogViewModel>>(() => new RefLogView());
       //   dependencyResolver.Register<IViewFor<ICommitHistoryViewModel>>(() => new HistoryView());
