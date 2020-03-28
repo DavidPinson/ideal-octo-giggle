@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace yawn.Service.Interface
 {
@@ -6,5 +7,8 @@ namespace yawn.Service.Interface
   {
     IObservable<string> CurrentMenu { get; }
     IObservable<string> CurrentNote { get; }
+
+    void ChangeNote();
+    Task LoadLink();
   }
 }

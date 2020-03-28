@@ -9,6 +9,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:markdig="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
     mc:Ignorable="d">
+
+    <FrameworkElement.CommandBindings>
+      <CommandBinding Command="{x:Static markdig:Commands.Hyperlink}" Executed="HyperlinkCmd" />
+    </FrameworkElement.CommandBindings>
     
     <Grid x:Name="test" ShowGridLines="false">
 
@@ -22,13 +26,12 @@
       </Grid.RowDefinitions>
 
       <DockPanel Grid.Column="0" Grid.Row="0">
-        <Button x:Name="GoNextButton" Content="Go to first" />
         <markdig:MarkdownViewer x:Name="MenuViewer"/>
       </DockPanel>
 
-      <!-- <DockPanel Grid.Column="1" Grid.Row="0"> -->
-        <!-- <markdig:MarkdownViewer x:Name="NoteViewer"/> -->
-      <!-- </DockPanel> -->
+      <DockPanel Grid.Column="1" Grid.Row="0">
+        <markdig:MarkdownViewer x:Name="NoteViewer"/>
+      </DockPanel>
 
     </Grid>
 

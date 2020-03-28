@@ -1,3 +1,4 @@
+using System.Reactive;
 using ReactiveUI;
 using Splat;
 using yawn.Service;
@@ -12,6 +13,8 @@ namespace yawn.ViewModel
     // Required by the IScreen interface.
     public RoutingState Router { get; }
 
+    public ReactiveCommand<Unit, Unit> ChangeText;
+
     public MainViewModel()
     {
       this.Router = new RoutingState();
@@ -21,6 +24,14 @@ namespace yawn.ViewModel
 
       // Navigate to the opening page of the application
       this.Router.Navigate.Execute(Locator.Current.GetService<NoteViewModel>());
+
+      ChangeText = ReactiveCommand.Create(() => 
+      {
+        Locator
+          .Current
+          .GetService<INoteService>()
+          .ChangeNote();
+      });
     }
 
     private void RegisterParts()//(IMutableDependencyResolver dependencyResolver)

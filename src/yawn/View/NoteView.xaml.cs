@@ -13,10 +13,17 @@ namespace yawn.View
       this.WhenActivated(dispose =>
       {
         dispose(this.WhenAnyValue(x => x.ViewModel.CurrentMenuMd).BindTo(this, x => x.MenuViewer.Markdown));
-        //dispose(this.WhenAnyValue(x => x.ViewModel.CurrentNoteMd).BindTo(this, x => x.NoteViewer.Markdown));
+        dispose(this.WhenAnyValue(x => x.ViewModel.CurrentNoteMd).BindTo(this, x => x.NoteViewer.Markdown));
 
-        //dispose(this.BindCommand(this.ViewModel, vm=>vm.ChangeText, v => v.GoNextButton));
       });
     }
+
+    private void HyperlinkCmd(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+    {
+      //Process.Start(e.Parameter.ToString());
+      //Viewer.Markdown = File.ReadAllText(e.Parameter.ToString());
+      string link = e.Parameter.ToString();
+    }
+
   }
 }

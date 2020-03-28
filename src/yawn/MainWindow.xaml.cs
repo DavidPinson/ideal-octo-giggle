@@ -6,20 +6,28 @@ namespace yawn
   /// <summary>
   /// Interaction logic for MainWindow.xaml
   /// </summary>
-  public partial class MainWindow : IActivatableView
+  public partial class MainWindow : IViewFor<MainViewModel>// IActivatableView
   {
     public MainViewModel MainViewModel { get; protected set; }
+    public MainViewModel ViewModel { get { return MainViewModel; } set { MainViewModel = value; } }
 
-    public MainWindow()
+    // object IViewFor.ViewModel { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    object IViewFor.ViewModel
     {
-      InitializeComponent();
+      get => ViewModel;
+      set => ViewModel = (MainViewModel)value;
+    }
 
-      this.MainViewModel = new MainViewModel();
-      this.DataContext = this.MainViewModel;
+  public MainWindow()
+  {
+    InitializeComponent();
 
-      this.WhenActivated(
-        dispose =>
-        {
+    this.MainViewModel = new MainViewModel();
+    this.DataContext = this.MainViewModel;
+
+    this.WhenActivated(
+      dispose =>
+      {
           // d(CommonInteractions.CheckToProceed.RegisterHandler(
           //     async interaction =>
           //     {
@@ -41,7 +49,8 @@ namespace yawn
           //     }));
 
           dispose(this.WhenAnyValue(x => x.MainViewModel).BindTo(this, x => x.DataContext));
-        });
-    }
+          dispose(this.BindCommand(this.ViewModel, vm => vm.ChangeText, v => v.HomeButton));
+      });
   }
+}
 }
