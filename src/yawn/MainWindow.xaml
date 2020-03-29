@@ -14,8 +14,6 @@
   mc:Ignorable="d"  
   TitleCharacterCasing="Normal" >
 
-  <!-- <iconPacks:PackIconPicolIcons Kind="NotesEdit" /> -->
-
   <Grid ShowGridLines="False">
 
     <Grid.ColumnDefinitions>

@@ -5,10 +5,16 @@ namespace yawn.Service.Interface
 {
   public interface INoteService
   {
-    IObservable<string> CurrentMenu { get; }
+    IObservable<string> Message { get; }
     IObservable<string> CurrentNote { get; }
 
-    void ChangeNote();
-    Task LoadLink();
+    string CurrentNoteName { get; }
+
+    Task LoadLinkAsync(string link);
+    Task ReloadCurrentNoteAsync();
+    Task LoadHomeNoteAsync();
+    Task LoadPrevNoteAsync();
+    Task LoadNextNoteAsync();
+    Task LoadSearchResultNoteAsync(string search);
   }
 }

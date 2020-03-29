@@ -14,25 +14,8 @@
       <CommandBinding Command="{x:Static markdig:Commands.Hyperlink}" Executed="HyperlinkCmd" />
     </FrameworkElement.CommandBindings>
     
-    <Grid x:Name="test" ShowGridLines="false">
-
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="3*" /> 
-        <ColumnDefinition Width="7*" />
-      </Grid.ColumnDefinitions>
-  
-      <Grid.RowDefinitions>
-        <RowDefinition Height="*" />
-      </Grid.RowDefinitions>
-
-      <DockPanel Grid.Column="0" Grid.Row="0">
-        <markdig:MarkdownViewer x:Name="MenuViewer"/>
-      </DockPanel>
-
-      <DockPanel Grid.Column="1" Grid.Row="0">
-        <markdig:MarkdownViewer x:Name="NoteViewer"/>
-      </DockPanel>
-
-    </Grid>
+    <DockPanel>
+      <markdig:MarkdownViewer x:Name="NoteViewer" />
+    </DockPanel>
 
 </rxui:ReactiveUserControl>

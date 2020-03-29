@@ -3,15 +3,11 @@ using yawn.ViewModel;
 
 namespace yawn
 {
-  /// <summary>
-  /// Interaction logic for MainWindow.xaml
-  /// </summary>
-  public partial class MainWindow : IViewFor<MainViewModel>// IActivatableView
+  public partial class MainWindow : IViewFor<MainViewModel>
   {
     public MainViewModel MainViewModel { get; protected set; }
     public MainViewModel ViewModel { get { return MainViewModel; } set { MainViewModel = value; } }
 
-    // object IViewFor.ViewModel { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
     object IViewFor.ViewModel
     {
       get => ViewModel;
@@ -48,8 +44,11 @@ namespace yawn
           //       interaction.SetOutput(input);
           //     }));
 
-          dispose(this.WhenAnyValue(x => x.MainViewModel).BindTo(this, x => x.DataContext));
-          dispose(this.BindCommand(this.ViewModel, vm => vm.ChangeText, v => v.HomeButton));
+        dispose(this.WhenAnyValue(x => x.MainViewModel).BindTo(this, x => x.DataContext));
+
+        dispose(this.BindCommand(this.ViewModel, vm => vm.HomeCmd, v => v.HomeButton));
+        dispose(this.BindCommand(this.ViewModel, vm => vm.NavigateBeforeCmd, v => v.NavigateBeforeButton));
+        dispose(this.BindCommand(this.ViewModel, vm => vm.NavigateAfterCmd, v => v.NavigateNextButton));
       });
   }
 }

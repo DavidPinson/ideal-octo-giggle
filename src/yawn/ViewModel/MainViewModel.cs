@@ -13,7 +13,12 @@ namespace yawn.ViewModel
     // Required by the IScreen interface.
     public RoutingState Router { get; }
 
-    public ReactiveCommand<Unit, Unit> ChangeText;
+    public ReactiveCommand<Unit, Unit> HomeCmd;
+    public ReactiveCommand<Unit, Unit> NavigateBeforeCmd;
+    public ReactiveCommand<Unit, Unit> NavigateAfterCmd;
+    public ReactiveCommand<string, Unit> SearchCmd;
+    public ReactiveCommand<Unit, Unit> SettingsCmd;
+    public ReactiveCommand<Unit, Unit> EditCmd;
 
     public MainViewModel()
     {
@@ -25,13 +30,10 @@ namespace yawn.ViewModel
       // Navigate to the opening page of the application
       this.Router.Navigate.Execute(Locator.Current.GetService<NoteViewModel>());
 
-      ChangeText = ReactiveCommand.Create(() => 
-      {
-        Locator
-          .Current
-          .GetService<INoteService>()
-          .ChangeNote();
-      });
+      HomeCmd = ReactiveCommand.CreateFromTask(Locator.Current.GetService<INoteService>().LoadHomeNoteAsync);
+      NavigateBeforeCmd = ReactiveCommand.CreateFromTask(Locator.Current.GetService<INoteService>().LoadPrevNoteAsync);
+      NavigateAfterCmd = ReactiveCommand.CreateFromTask(Locator.Current.GetService<INoteService>().LoadNextNoteAsync);
+      SearchCmd = ReactiveCommand.CreateFromTask<string>(Locator.Current.GetService<INoteService>().LoadSearchResultNoteAsync);
     }
 
     private void RegisterParts()//(IMutableDependencyResolver dependencyResolver)
@@ -42,7 +44,8 @@ namespace yawn.ViewModel
       Locator.CurrentMutable.InitializeReactiveUI();
 
       Locator.CurrentMutable.RegisterConstant<IScreen>(this);
-      Locator.CurrentMutable.RegisterConstant<INoteService>(new NoteService());
+      Locator.CurrentMutable.RegisterConstant<IConfigService>(new ConfigService());
+      Locator.CurrentMutable.RegisterConstant<INoteService>(new NoteService(Locator.Current.GetService<IConfigService>()));
 
       Locator.CurrentMutable.Register<EditViewModel>(() =>
       {
