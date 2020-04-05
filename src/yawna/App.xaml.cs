@@ -2,7 +2,7 @@
 using System.Windows;
 using MahApps.Metro;
 
-namespace yawn
+namespace yawna
 {
   /// <summary>
   /// Interaction logic for App.xaml

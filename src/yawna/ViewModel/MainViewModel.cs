@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Splat;
-using yawn.Service;
-using yawn.Service.Interface;
-using yawn.View;
+using yawna.Service;
+using yawna.Service.Interface;
+using yawna.View;
 
-namespace yawn.ViewModel
+namespace yawna.ViewModel
 {
   public class MainViewModel : ReactiveObject, IScreen
   {

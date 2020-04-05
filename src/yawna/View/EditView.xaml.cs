@@ -1,6 +1,6 @@
 using ReactiveUI;
 
-namespace yawn.View
+namespace yawna.View
 {
   public partial class EditView
   {

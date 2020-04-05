@@ -1,8 +1,8 @@
 using ReactiveUI;
 using Splat;
-using yawn.Service.Interface;
+using yawna.Service.Interface;
 
-namespace yawn.View
+namespace yawna.View
 {
   public partial class NoteView
   {    

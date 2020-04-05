@@ -1,14 +1,12 @@
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using ICSharpCode.AvalonEdit.Document;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using yawn.Service.Interface;
+using yawna.Service.Interface;
 
-namespace yawn.ViewModel
+namespace yawna.ViewModel
 {
   public class EditViewModel : ReactiveObject, IRoutableViewModel
   {

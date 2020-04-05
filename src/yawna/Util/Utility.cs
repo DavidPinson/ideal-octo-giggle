@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace yawn.Util
+namespace yawna.Util
 {
   public class Utility
   {

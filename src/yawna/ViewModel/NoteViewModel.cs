@@ -1,7 +1,7 @@
 using ReactiveUI;
-using yawn.Service.Interface;
+using yawna.Service.Interface;
 
-namespace yawn.ViewModel
+namespace yawna.ViewModel
 {
   public class NoteViewModel : ReactiveObject, IRoutableViewModel
   {

@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace yawn.Util
+namespace yawna.Util
 {
   public class AsyncLock : IDisposable
   {

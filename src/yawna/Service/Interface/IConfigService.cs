@@ -1,4 +1,4 @@
-namespace yawn.Service.Interface
+namespace yawna.Service.Interface
 {
   public interface IConfigService
   {

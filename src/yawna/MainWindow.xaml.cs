@@ -1,7 +1,7 @@
 ﻿using ReactiveUI;
-using yawn.ViewModel;
+using yawna.ViewModel;
 
-namespace yawn
+namespace yawna
 {
   public partial class MainWindow : IViewFor<MainViewModel>
   {

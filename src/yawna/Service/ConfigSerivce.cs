@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using yawn.Service.Interface;
+using yawna.Service.Interface;
 
-namespace yawn.Service
+namespace yawna.Service
 {
   public class ConfigService : IConfigService
   {

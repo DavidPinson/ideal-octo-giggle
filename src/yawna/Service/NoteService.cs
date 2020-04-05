@@ -4,10 +4,10 @@ using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
-using yawn.Service.Interface;
-using yawn.Util;
+using yawna.Service.Interface;
+using yawna.Util;
 
-namespace yawn.Service
+namespace yawna.Service
 {
   public class NoteService : INoteService
   {
@@ -125,6 +125,7 @@ namespace yawn.Service
     }
     public async Task LoadSearchResultNoteAsync(string search)
     {
+      Task.Delay(500).ConfigureAwait(false);
       _message.OnNext($"NoteService - LoadSearchResultNoteAsync(): search text: {search}");
       _currentNote.OnNext($"# Search({search}) not implemented yet! Comming soon! :)");
     }

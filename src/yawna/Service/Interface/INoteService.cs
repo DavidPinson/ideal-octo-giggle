@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace yawn.Service.Interface
+namespace yawna.Service.Interface
 {
   public interface INoteService
   {
