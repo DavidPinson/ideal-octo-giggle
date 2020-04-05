@@ -2,7 +2,7 @@
 
 ## What?
 
-YAWN stands for: Yet Another Wiki Note App.
+YAWNA stands for: Yet Another Wiki Note App.
 
 It's quite simple, I used during a couple of months [dokuwiki](https://www.dokuwiki.org/dokuwiki) in "portable" mode and it worked great. I synced my wiki/note on multiple device using OneDrive. But the sync stopped working recently (2019). So I began looking for a replacement... [StakEditPro](https://stackeditpro.io/), [w2wiki](https://github.com/panicsteve/w2wiki), [Jingo](https://github.com/claudioc/jingo), [Zim](https://zim-wiki.org/index.html), [MDwiki](http://dynalon.github.io/mdwiki/#!index.md), [WikiJs](https://wiki.js.org/), [Start-and-doc](https://start-and-doc.com/#/), [Joplin](https://joplinapp.org/) and I'm sure there's plenty more...
 
