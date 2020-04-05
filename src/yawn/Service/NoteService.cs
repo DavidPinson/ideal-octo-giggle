@@ -15,17 +15,21 @@ namespace yawn.Service
     private IConfigService _configService;
     private ReplaySubject<string> _message = new ReplaySubject<string>(1);
     private ReplaySubject<string> _currentNote = new ReplaySubject<string>(1);
+    private ReplaySubject<bool> _currentEditNoteDirty = new ReplaySubject<bool>(1);
 
     private List<string> _notes = new List<string>();
     private int _currentNoteIndex = 0;
 
+    private string _currentEditedNote = string.Empty;
+
     public IObservable<string> Message => _message.AsObservable();
     public IObservable<string> CurrentNote => _currentNote.AsObservable();
-    public string CurrentNoteName => throw new NotImplementedException();
+    public IObservable<bool> CurrentEditNoteDirty => _currentEditNoteDirty.AsObservable();
 
     public NoteService(IConfigService configService)
     {
       _configService = configService;
+      _currentEditNoteDirty.OnNext(false);
       LoadLinkAsync(_configService.HomeNoteFileName);
     }
 
@@ -63,6 +67,7 @@ namespace yawn.Service
         using(await _lock.LockAsync().ConfigureAwait(false))
         {
           await LoadNoteAtCurrentIndex().ConfigureAwait(false);
+          _currentEditedNote = string.Empty;
         }
       }
       catch(Exception ex)
@@ -124,7 +129,51 @@ namespace yawn.Service
       _currentNote.OnNext($"# Search({search}) not implemented yet! Comming soon! :)");
     }
 
-    private bool IsLocalFile(string filePathName)
+    public async Task SetCurrentEditedNoteAsync(string note)
+    {
+      try
+      {
+        using(await _lock.LockAsync().ConfigureAwait(false))
+        {
+          _currentEditedNote = note;
+
+          string currentNote = await LoadNoteFromFileAsync(_notes[_currentNoteIndex]).ConfigureAwait(false);
+          if(currentNote.Equals(_currentEditedNote) == true)
+          {
+            _currentEditNoteDirty.OnNext(false);
+          }
+          else
+          {
+            _currentEditNoteDirty.OnNext(true);
+          }
+        }
+      }
+      catch(Exception ex)
+      {
+        _message.OnNext($"NoteService - ReloadCurrentNoteAsync(): {ex.Message}, {ex.StackTrace}");
+      }
+    }
+    public async Task SaveCurrentEditedNoteAsync()
+    {
+      try
+      {
+        using(await _lock.LockAsync().ConfigureAwait(false))
+        {
+          using(FileStream fs = new FileStream(_notes[_currentNoteIndex], FileMode.Truncate, FileAccess.ReadWrite))
+          using(StreamWriter sw = new StreamWriter(fs))
+          {
+            await sw.WriteAsync(_currentEditedNote).ConfigureAwait(false);
+          }
+          _currentEditNoteDirty.OnNext(false);
+        }
+      }
+      catch(Exception ex)
+      {
+        _message.OnNext($"NoteService - ReloadCurrentNoteAsync(): {ex.Message}, {ex.StackTrace}");
+      }
+    }
+
+    private static bool IsLocalFile(string filePathName)
     {
       return File.Exists(filePathName);
     }
@@ -137,7 +186,7 @@ namespace yawn.Service
         _currentNote.OnNext(file);
       }
     }
-    private async Task<string> LoadNoteFromFileAsync(string filePathName)
+    private static async Task<string> LoadNoteFromFileAsync(string filePathName)
     {
       string file = string.Empty;
 

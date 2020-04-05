@@ -8,7 +8,7 @@ namespace yawn.Service.Interface
     IObservable<string> Message { get; }
     IObservable<string> CurrentNote { get; }
 
-    string CurrentNoteName { get; }
+    IObservable<bool> CurrentEditNoteDirty { get; }
 
     Task LoadLinkAsync(string link);
     Task ReloadCurrentNoteAsync();
@@ -16,5 +16,8 @@ namespace yawn.Service.Interface
     Task LoadPrevNoteAsync();
     Task LoadNextNoteAsync();
     Task LoadSearchResultNoteAsync(string search);
+
+    Task SetCurrentEditedNoteAsync(string note);
+    Task SaveCurrentEditedNoteAsync();
   }
 }

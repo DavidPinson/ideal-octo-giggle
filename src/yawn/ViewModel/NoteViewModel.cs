@@ -9,7 +9,7 @@ namespace yawn.ViewModel
     private ObservableAsPropertyHelper<string> _currentNoteMd;
 
     public string UrlPathSegment => "Note view";
-    
+
     public string CurrentNoteMd => _currentNoteMd.Value;
 
     public IScreen HostScreen { get; }

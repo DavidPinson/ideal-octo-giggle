@@ -1,5 +1,9 @@
+using System;
 using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using Splat;
 using yawn.Service;
 using yawn.Service.Interface;
@@ -16,9 +20,18 @@ namespace yawn.ViewModel
     public ReactiveCommand<Unit, Unit> HomeCmd;
     public ReactiveCommand<Unit, Unit> NavigateBeforeCmd;
     public ReactiveCommand<Unit, Unit> NavigateAfterCmd;
-    public ReactiveCommand<string, Unit> SearchCmd;
-    public ReactiveCommand<Unit, Unit> SettingsCmd;
-    public ReactiveCommand<Unit, Unit> EditCmd;
+    public ReactiveCommand<Unit, Unit> SearchCmd;
+    public ReactiveCommand<Unit, Unit> SaveCmd;
+    public ReactiveCommand<Unit, IRoutableViewModel> SettingsCmd;
+    public ReactiveCommand<Unit, IRoutableViewModel> EditCmd;    
+    public ReactiveCommand<Unit, IRoutableViewModel> CancelCmd;
+
+    [Reactive]
+    public bool IsInViewMode { get; set; }
+    [Reactive]
+    public bool IsInEditMode { get; set; }
+    [Reactive]
+    public string SearchTerm { get; set; }
 
     public MainViewModel()
     {
@@ -27,13 +40,27 @@ namespace yawn.ViewModel
 
       this.RegisterParts();
 
+      IsInViewMode = true;
+      IsInEditMode = false;
+
       // Navigate to the opening page of the application
       this.Router.Navigate.Execute(Locator.Current.GetService<NoteViewModel>());
 
-      HomeCmd = ReactiveCommand.CreateFromTask(Locator.Current.GetService<INoteService>().LoadHomeNoteAsync);
-      NavigateBeforeCmd = ReactiveCommand.CreateFromTask(Locator.Current.GetService<INoteService>().LoadPrevNoteAsync);
-      NavigateAfterCmd = ReactiveCommand.CreateFromTask(Locator.Current.GetService<INoteService>().LoadNextNoteAsync);
-      SearchCmd = ReactiveCommand.CreateFromTask<string>(Locator.Current.GetService<INoteService>().LoadSearchResultNoteAsync);
+      IObservable<bool> canExecuteViewCmd = this.WhenAnyValue(x => x.IsInViewMode, (isInViewMode) => isInViewMode == true);
+      IObservable<bool> canExecuteSearchCmd = this
+        .WhenAnyValue(
+          x => x.IsInViewMode, x => x.SearchTerm.Length,
+          (isInViewMode, searchTermLength) => isInViewMode == true && searchTermLength > 0);
+
+      HomeCmd = ReactiveCommand.CreateFromTask(HomeCmdImpl, canExecuteViewCmd);
+      NavigateBeforeCmd = ReactiveCommand.CreateFromTask(NavigateBeforeCmdImpl, canExecuteViewCmd);
+      NavigateAfterCmd = ReactiveCommand.CreateFromTask(NavigateAfterCmdImpl, canExecuteViewCmd);
+      SearchCmd = ReactiveCommand.CreateFromTask(SearchCmdImpl, canExecuteSearchCmd);
+      SaveCmd = ReactiveCommand.CreateFromTask(SaveCmdImpl, Locator.Current.GetService<INoteService>().CurrentEditNoteDirty.ObserveOn(RxApp.MainThreadScheduler));
+
+      SettingsCmd = ReactiveCommand.CreateFromObservable(SettingsCmdImpl, canExecuteViewCmd);
+      EditCmd = ReactiveCommand.CreateFromObservable(EditCmdImpl, canExecuteViewCmd);
+      CancelCmd = ReactiveCommand.CreateFromObservable(CancelCmdImpl);
     }
 
     private void RegisterParts()//(IMutableDependencyResolver dependencyResolver)
@@ -51,7 +78,7 @@ namespace yawn.ViewModel
       {
         return new EditViewModel(Locator.Current.GetService<IScreen>(), Locator.Current.GetService<INoteService>());
       });
-      Locator.CurrentMutable.Register<NoteViewModel>(() => 
+      Locator.CurrentMutable.Register<NoteViewModel>(() =>
       {
         return new NoteViewModel(Locator.Current.GetService<IScreen>(), Locator.Current.GetService<INoteService>());
       });
@@ -66,13 +93,53 @@ namespace yawn.ViewModel
 
       //   dependencyResolver.Register<MainViewModel, IMainViewModel>();
       //   dependencyResolver.RegisterConstant<IActivationForViewFetcher>(new DispatcherActivationForViewFetcher());
-      
+
       //   dependencyResolver.Register<IViewFor<IBranchViewModel>>(() => new BranchesView());
       //   dependencyResolver.Register<IViewFor<IRefLogViewModel>>(() => new RefLogView());
       //   dependencyResolver.Register<IViewFor<ICommitHistoryViewModel>>(() => new HistoryView());
       //   dependencyResolver.Register<IViewFor<IOutputViewModel>>(() => new OutputView());
       //   dependencyResolver.Register<IViewFor<IRepositoryDocumentViewModel>>(() => new RepositoryView());
       //   dependencyResolver.Register<IViewFor<ITagViewModel>>(() => new TagView());
+    }
+
+    private Task HomeCmdImpl()
+    {
+      return Locator.Current.GetService<INoteService>().LoadHomeNoteAsync();
+    }
+    private Task NavigateBeforeCmdImpl()
+    {
+      return Locator.Current.GetService<INoteService>().LoadPrevNoteAsync();
+    }
+    private Task NavigateAfterCmdImpl()
+    {
+      return Locator.Current.GetService<INoteService>().LoadNextNoteAsync();
+    }
+    private Task SearchCmdImpl()
+    {
+      return Locator.Current.GetService<INoteService>().LoadSearchResultNoteAsync(SearchTerm);
+    }
+    private async Task SaveCmdImpl()
+    {
+      await Locator.Current.GetService<INoteService>().SaveCurrentEditedNoteAsync().ConfigureAwait(false);
+      await Locator.Current.GetService<INoteService>().ReloadCurrentNoteAsync().ConfigureAwait(false);
+    }
+    private IObservable<IRoutableViewModel> SettingsCmdImpl()
+    {
+      IsInViewMode = false;
+      IsInEditMode = true;
+      return this.Router.Navigate.Execute(Locator.Current.GetService<EditViewModel>());
+    }
+    private IObservable<IRoutableViewModel> EditCmdImpl()
+    {
+      IsInViewMode = false;
+      IsInEditMode = true;
+      return this.Router.Navigate.Execute(Locator.Current.GetService<EditViewModel>());
+    }
+    private IObservable<IRoutableViewModel> CancelCmdImpl()
+    {
+      IsInViewMode = true;
+      IsInEditMode = false;
+      return this.Router.Navigate.Execute(Locator.Current.GetService<NoteViewModel>());
     }
 
   }

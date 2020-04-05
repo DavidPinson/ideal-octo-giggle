@@ -43,8 +43,7 @@
       <Button x:Name="NavigateNextButton" Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Height="28" Margin="1">
         <iconPacks:PackIconMaterialDesign Kind="NavigateNext" />
       </Button>
-      <TextBox x:Name="SearchTextBox" Style="{StaticResource MahApps.Styles.TextBox}" Width="250" Height="28" Margin="1">
-      </TextBox>
+      <TextBox x:Name="SearchTextBox" Style="{StaticResource MahApps.Styles.TextBox}" Width="250" Height="28" Margin="1" />
       <Button x:Name="SearchButton" Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Height="28" Margin="1">
         <iconPacks:PackIconMaterialDesign Kind="Search" />
       </Button>
@@ -53,11 +52,24 @@
       </Button>
     </StackPanel>
 
-    <StackPanel Grid.Column="5" Grid.Row="0" Grid.RowSpan="2"
+    <StackPanel x:Name="EditStackPanel" Grid.Column="5" Grid.Row="0" Grid.RowSpan="2"
+      Orientation="Horizontal"
       HorizontalAlignment ="Center"
       VerticalAlignment = "Center">
-      <Button x:Name="EditButton" Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Height="28">
+      <Button x:Name="EditButton" Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Height="28" Margin="1">
         <iconPacks:PackIconMaterialDesign Kind="Edit" />
+      </Button>
+    </StackPanel>
+
+    <StackPanel x:Name="SaveCancelStackPanel" Grid.Column="5" Grid.Row="0" Grid.RowSpan="2"
+      Orientation="Horizontal"
+      HorizontalAlignment ="Center"
+      VerticalAlignment = "Center">
+      <Button x:Name="SaveButton" Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Height="28" Margin="1">
+        <iconPacks:PackIconMaterialDesign Kind="Save" />
+      </Button>
+      <Button x:Name="CancelButton" Style="{StaticResource MahApps.Styles.Button.AccentedSquare}" Height="28" Margin="1">
+        <iconPacks:PackIconMaterialDesign Kind="Cancel" />
       </Button>
     </StackPanel>
 

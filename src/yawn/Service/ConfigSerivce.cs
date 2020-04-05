@@ -8,6 +8,6 @@ namespace yawn.Service
   {
     public string NotesPath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "yawn/notes");
 
-    public string HomeNoteFileName => "menu.md";
+    public string HomeNoteFileName => "index.md";
   }
 }
