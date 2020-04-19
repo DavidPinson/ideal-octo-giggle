@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:markdig="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
+    xmlns:local="clr-namespace:Yawna.MarkdigWpfCustomized"
     mc:Ignorable="d">
 
     <FrameworkElement.CommandBindings>
@@ -15,7 +16,7 @@
     </FrameworkElement.CommandBindings>
     
     <DockPanel>
-      <markdig:MarkdownViewer x:Name="NoteViewer" />
+      <local:YawnaMarkdownViewer x:Name="NoteViewer" />
     </DockPanel>
 
 </rxui:ReactiveUserControl>

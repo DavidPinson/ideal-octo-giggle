@@ -76,11 +76,16 @@ namespace yawna.ViewModel
 
       Locator.CurrentMutable.Register<EditViewModel>(() =>
       {
-        return new EditViewModel(Locator.Current.GetService<IScreen>(), Locator.Current.GetService<INoteService>());
+        return new EditViewModel(
+          Locator.Current.GetService<IScreen>(),
+          Locator.Current.GetService<INoteService>());
       });
       Locator.CurrentMutable.Register<NoteViewModel>(() =>
       {
-        return new NoteViewModel(Locator.Current.GetService<IScreen>(), Locator.Current.GetService<INoteService>());
+        return new NoteViewModel(
+          Locator.Current.GetService<IScreen>(),
+          Locator.Current.GetService<INoteService>(),
+          Locator.Current.GetService<IConfigService>());
       });
 
       Locator.CurrentMutable.Register<IViewFor<EditViewModel>>(() => new EditView());
