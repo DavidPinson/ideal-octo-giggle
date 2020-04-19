@@ -19,6 +19,8 @@ namespace yawna.Service
 
     private List<string> _notes = new List<string>();
     private int _currentNoteIndex = 0;
+    private string _notesPath;
+    private string _homeNoteFileName;
 
     private string _currentEditedNote = string.Empty;
 
@@ -30,29 +32,93 @@ namespace yawna.Service
     {
       _configService = configService;
       _currentEditNoteDirty.OnNext(false);
-      LoadLinkAsync(_configService.HomeNoteFileName);
+
+      InitNoteServiceAsync();
+    }
+    private async Task InitNoteServiceAsync()
+    {
+      _notesPath = await _configService
+        .NotesPath
+        .FirstAsync();
+
+      _homeNoteFileName = await _configService
+        .HomeNoteFileName
+        .FirstAsync();
+
+      _configService
+        .NotesPath
+        .Subscribe(notePath =>
+        {
+          try
+          {
+            _notesPath = notePath;
+          }
+          catch(Exception ex)
+          {
+            _message.OnNext($"NoteService - NotePath Subscription: {ex.Message}, {ex.StackTrace}");
+          }
+        });
+
+      _configService
+        .HomeNoteFileName
+        .Subscribe(homeNoteFileName =>
+        {
+          try
+          {
+            _homeNoteFileName = homeNoteFileName;
+          }
+          catch(Exception ex)
+          {
+            _message.OnNext($"NoteService - HomeNoteFileName Subscription: {ex.Message}, {ex.StackTrace}");
+          }
+        });
+
+      await LoadLinkAsync(_homeNoteFileName).ConfigureAwait(false);
     }
 
     public async Task LoadLinkAsync(string link)
     {
       try
       {
-        string filePathName = Path.Combine(_configService.NotesPath, link);
-
-        if(IsLocalFile(filePathName) == true)
-        {
-          using(await _lock.LockAsync().ConfigureAwait(false))
-          {
-            _notes.Add(filePathName);
-            _currentNoteIndex = _notes.Count - 1;
-
-            await LoadNoteAtCurrentIndex().ConfigureAwait(false);
-          }
-        }
-        else
+        // web link
+        if(Uri.IsWellFormedUriString(link, UriKind.Absolute) == true)
         {
           _message.OnNext($"NoteService - LoadLinkAsync(string link): OpenBrowser({link})");
           Utility.OpenBrowser(link);
+        }
+        else
+        {
+          string filePathName = Path.Combine(_notesPath, link);
+
+          // note file
+          if(Path.GetExtension(filePathName) == ".md")
+          {
+            if(File.Exists(filePathName) == false)
+            {
+              if(Directory.Exists(Path.GetDirectoryName(filePathName)) == false)
+              {
+                Directory.CreateDirectory(Path.GetDirectoryName(filePathName));
+              }
+
+              // create new note
+              using(File.Create(filePathName)){}
+            }
+
+            using(await _lock.LockAsync().ConfigureAwait(false))
+            {
+              _notes.Add(filePathName);
+              _currentNoteIndex = _notes.Count - 1;
+
+              _message.OnNext($"NoteService - LoadLinkAsync(string link): Open existing note({link})");
+              await LoadNoteAtCurrentIndex().ConfigureAwait(false);
+            }
+          }
+          else
+          {
+            // doc reference
+            _message.OnNext($"NoteService - LoadLinkAsync(string link): Open ref link({filePathName})");
+            Utility.OpenBrowser(filePathName);
+          }
         }
       }
       catch(Exception ex)
@@ -80,7 +146,7 @@ namespace yawna.Service
       try
       {
         _message.OnNext($"NoteService - LoadHomeNoteAsync()");
-        await LoadLinkAsync(_configService.HomeNoteFileName).ConfigureAwait(false);
+        await LoadLinkAsync(_homeNoteFileName).ConfigureAwait(false);
       }
       catch(Exception ex)
       {
@@ -181,11 +247,8 @@ namespace yawna.Service
     private async Task LoadNoteAtCurrentIndex()
     {
       string file = await LoadNoteFromFileAsync(_notes[_currentNoteIndex]).ConfigureAwait(false);
-      if(string.IsNullOrWhiteSpace(file) == false)
-      {
-        _message.OnNext($"NoteService - LoadNoteAtCurrentIndex(): index: {_currentNoteIndex}, note: {_notes[_currentNoteIndex]}");
-        _currentNote.OnNext(file);
-      }
+      _message.OnNext($"NoteService - LoadNoteAtCurrentIndex(): index: {_currentNoteIndex}, note: {_notes[_currentNoteIndex]}");
+      _currentNote.OnNext(file);
     }
     private static async Task<string> LoadNoteFromFileAsync(string filePathName)
     {

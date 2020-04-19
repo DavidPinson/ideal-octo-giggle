@@ -1,8 +1,10 @@
+using System;
+
 namespace yawna.Service.Interface
 {
   public interface IConfigService
   {
-    string NotesPath { get; }
-    string HomeNoteFileName { get; }
+    IObservable<string> NotesPath { get; }
+    IObservable<string> HomeNoteFileName { get; }
   }
 }

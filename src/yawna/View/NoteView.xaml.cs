@@ -13,12 +13,13 @@ namespace yawna.View
       this.WhenActivated(dispose =>
       {
         dispose(this.WhenAnyValue(x => x.ViewModel.CurrentNoteMd).BindTo(this, x => x.NoteViewer.Markdown));
+        dispose(this.WhenAnyValue(x => x.ViewModel.BaseNotesPath).BindTo(this, x => x.NoteViewer.UCRootPath));
       });
     }
 
     private async void HyperlinkCmd(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
     {
-      await Locator.Current.GetService<INoteService>()?.LoadLinkAsync(e.Parameter.ToString());
+      await Locator.Current.GetService<INoteService>().LoadLinkAsync(e.Parameter.ToString());
     }
 
   }
