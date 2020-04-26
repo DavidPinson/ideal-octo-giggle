@@ -15,5 +15,6 @@
     <PackageReference Include="System.Reactive" Version="4.3.2"/>
     <PackageReference Include="AvalonEdit" Version="6.0.1"/>
     <PackageReference Include="ReactiveUI.Fody" Version="11.2.3"/>
+    <PackageReference Include="fastJSON" Version="2.3.2"/>
   </ItemGroup>
 </Project>

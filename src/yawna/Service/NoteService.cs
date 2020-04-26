@@ -240,10 +240,6 @@ namespace yawna.Service
       }
     }
 
-    private static bool IsLocalFile(string filePathName)
-    {
-      return File.Exists(filePathName);
-    }
     private async Task LoadNoteAtCurrentIndex()
     {
       string file = await LoadNoteFromFileAsync(_notes[_currentNoteIndex]).ConfigureAwait(false);
