@@ -4,9 +4,9 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
 using System.Threading.Tasks;
+using fastJSON;
 using yawna.Service.Interface;
 using yawna.ViewModel.Config;
-using fastJSON;
 
 namespace yawna.Service
 {
