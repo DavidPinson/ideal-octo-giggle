@@ -2,7 +2,11 @@ using System;
 using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Reflection;
+using System.Threading.Tasks;
 using yawna.Service.Interface;
+using yawna.ViewModel.Config;
+using fastJSON;
 
 namespace yawna.Service
 {
@@ -16,8 +20,41 @@ namespace yawna.Service
 
     public ConfigService()
     {
-      _notesPath.OnNext(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"yawn\notes"));
-      _homeNoteFileName.OnNext("index.md");
+      InitConfigServiceAsync();
+    }
+
+    private async Task InitConfigServiceAsync()
+    {
+      Assembly currentAssem = Assembly.GetExecutingAssembly();
+      string exePathFullName = Path.GetDirectoryName(currentAssem.Location);
+      string configPathFileName = Path.Combine(exePathFullName, "config.json");
+
+      YawnaConfig yc =new YawnaConfig()
+      {
+        NotesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"yawn\notes"),
+        HomeNoteFileName = "index.md"
+      };
+
+      if(File.Exists(configPathFileName) == true)
+      {
+        using(FileStream fs = new FileStream(configPathFileName, FileMode.Open, FileAccess.Read))
+        using(StreamReader sr = new StreamReader(fs))
+        {
+          string config = await sr.ReadToEndAsync().ConfigureAwait(false);
+          yc = JSON.ToObject<YawnaConfig>(config);
+        }
+      }
+      else
+      {
+        using(FileStream fs = new FileStream(configPathFileName, FileMode.Create, FileAccess.ReadWrite))
+        using(StreamWriter sw = new StreamWriter(fs))
+        {
+          await sw.WriteAsync(JSON.ToNiceJSON(yc)).ConfigureAwait(false);
+        }
+      }
+
+      _notesPath.OnNext(yc.NotesPath);
+      _homeNoteFileName.OnNext(yc.HomeNoteFileName);
     }
   }
 }
