@@ -29,7 +29,7 @@ namespace yawna.Service
       string exePathFullName = Path.GetDirectoryName(currentAssem.Location);
       string configPathFileName = Path.Combine(exePathFullName, "config.json");
 
-      YawnaConfig yc =new YawnaConfig()
+      YawnaConfig yc = new YawnaConfig()
       {
         NotesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"yawna\notes"),
         HomeNoteFileName = "index.md"

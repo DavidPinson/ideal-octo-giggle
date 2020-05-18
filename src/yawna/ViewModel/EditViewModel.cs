@@ -39,6 +39,8 @@ namespace yawna.ViewModel
 
     private async Task InitDocumentTextAsync()
     {
+      await _noteService.ReloadCurrentNoteAsync().ConfigureAwait(false);
+      
       DocumentText = await _noteService
         .CurrentNote
         .FirstAsync();
