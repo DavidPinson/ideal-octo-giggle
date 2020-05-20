@@ -13,6 +13,7 @@ namespace yawna.Service
   {
     private AsyncLock _lock = new AsyncLock();
     private IConfigService _configService;
+    private ISearchService _searchService;
     private ReplaySubject<string> _message = new ReplaySubject<string>(1);
     private ReplaySubject<string> _currentNote = new ReplaySubject<string>(1);
     private ReplaySubject<bool> _currentEditNoteDirty = new ReplaySubject<bool>(1);
@@ -28,9 +29,10 @@ namespace yawna.Service
     public IObservable<string> CurrentNote => _currentNote.AsObservable();
     public IObservable<bool> CurrentEditNoteDirty => _currentEditNoteDirty.AsObservable();
 
-    public NoteService(IConfigService configService)
+    public NoteService(IConfigService configService, ISearchService searchService)
     {
       _configService = configService;
+      _searchService = searchService;
       _currentEditNoteDirty.OnNext(false);
 
       InitNoteServiceAsync();
@@ -101,7 +103,7 @@ namespace yawna.Service
               }
 
               // create new note
-              using(File.Create(filePathName)){}
+              using(File.Create(filePathName)) { }
             }
 
             using(await _lock.LockAsync().ConfigureAwait(false))
@@ -191,9 +193,25 @@ namespace yawna.Service
     }
     public async Task LoadSearchResultNoteAsync(string search)
     {
-      Task.Delay(500).ConfigureAwait(false);
-      _message.OnNext($"NoteService - LoadSearchResultNoteAsync(): search text: {search}");
-      _currentNote.OnNext($"# Search({search}) not implemented yet! Comming soon! :)");
+      // IEnumerable<string> result = _hoot.FindDocumentFileNames("powershell");
+
+      // result = _hoot.FindDocumentFileNames("+ovh +security");
+      // result = _hoot.FindDocumentFileNames("ovh security");
+      // result = _hoot.FindDocumentFileNames("ovh user");
+      // result = _hoot.FindDocumentFileNames("+ovh +user");
+      // result = _hoot.FindDocumentFileNames("zabix");
+      // result = _hoot.FindDocumentFileNames("zabbix");
+
+      try
+      {
+        List<string> results = await _searchService.QueryAsync(search).ConfigureAwait(false);
+
+        //_currentNote.OnNext($"# Search({search}) not implemented yet! Comming soon! :)");
+      }
+      catch(Exception ex)
+      {
+        _message.OnNext($"NoteService - LoadSearchResultNoteAsync():  {ex.Message}, {ex.StackTrace}");
+      }
     }
 
     public async Task SetCurrentEditedNoteAsync(string note)

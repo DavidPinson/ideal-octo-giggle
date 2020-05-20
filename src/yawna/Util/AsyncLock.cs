@@ -14,6 +14,12 @@ namespace yawna.Util
       return this;
     }
 
+    public AsyncLock Lock()
+    {
+      _semaphoreSlim.Wait();
+      return this;
+    }
+
     public void Dispose()
     {
       _semaphoreSlim.Release();
