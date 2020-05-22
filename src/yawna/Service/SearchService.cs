@@ -111,7 +111,10 @@ namespace yawna.Service
         {
           foreach(string s in notes)
           {
-            _fileToIndexQueue.Enqueue(s);
+            if(Path.GetFileName(s) != "searchResult.md")
+            {
+              _fileToIndexQueue.Enqueue(s);
+            }
           }
         }
       }
@@ -129,9 +132,12 @@ namespace yawna.Service
     {
       try
       {
-        using(_lockQueue.Lock())
+        if(Path.GetFileName(e.FullPath) != "searchResult.md")
         {
-          _fileToIndexQueue.Enqueue(e.FullPath);
+          using(_lockQueue.Lock())
+          {
+            _fileToIndexQueue.Enqueue(e.FullPath);
+          }
         }
       }
       catch(Exception ex)
@@ -141,29 +147,22 @@ namespace yawna.Service
     }
     private async Task IndexQueueAsync()
     {
-      int nbFileToIndex;
+      HashSet<string> filesToIndex = new HashSet<string>();
       using(await _lockQueue.LockAsync().ConfigureAwait(false))
       {
-        nbFileToIndex = _fileToIndexQueue.Count;
+        int nbFile = _fileToIndexQueue.Count;
+        for(int i = 0; i < nbFile; i++)
+        {
+          filesToIndex.Add(_fileToIndexQueue.Dequeue());
+        }
       }
 
-      if(nbFileToIndex == 0)
-      {
-        return;
-      }
-
-      string fileToIndex;
       string fileContent;
-      for(int i = 0; i < nbFileToIndex; i++)
+      foreach(string file in filesToIndex)
       {
         try
         {
-          using(await _lockQueue.LockAsync().ConfigureAwait(false))
-          {
-            fileToIndex = _fileToIndexQueue.Dequeue();
-          }
-
-          FileInfo fileInfo = new FileInfo(fileToIndex);
+          FileInfo fileInfo = new FileInfo(file);
 
           using(FileStream fs = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read))
           using(StreamReader sr = new StreamReader(fs))
@@ -173,6 +172,12 @@ namespace yawna.Service
 
           using(await _lockHoot.LockAsync().ConfigureAwait(false))
           {
+            if(_hoot.IsIndexed(fileInfo.FullName) == true)
+            {
+              _hoot.RemoveDocument(fileInfo.FullName);
+              _hoot.Save();
+              _hoot.OptimizeIndex();
+            }
             _hoot.Index(new Document(fileInfo, fileContent), true);
           }
         }
@@ -182,10 +187,17 @@ namespace yawna.Service
         }
       }
 
-      using(await _lockHoot.LockAsync().ConfigureAwait(false))
+      if(filesToIndex.Count > 0)
       {
-        _hoot.OptimizeIndex();
-        _hoot.Save();
+        using(await _lockHoot.LockAsync().ConfigureAwait(false))
+        {
+          _hoot.Save();
+          _hoot.OptimizeIndex();
+          _hoot.Shutdown();
+          _hoot = null;
+          await Task.Delay(2000).ConfigureAwait(false);
+          _hoot = new Hoot(_indexPathName, _indexBaseFileName, true);
+        }
       }
     }
 

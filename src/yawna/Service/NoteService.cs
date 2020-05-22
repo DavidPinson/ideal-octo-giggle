@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Text;
 using System.Threading.Tasks;
 using yawna.Service.Interface;
 using yawna.Util;
@@ -193,20 +195,33 @@ namespace yawna.Service
     }
     public async Task LoadSearchResultNoteAsync(string search)
     {
-      // IEnumerable<string> result = _hoot.FindDocumentFileNames("powershell");
-
-      // result = _hoot.FindDocumentFileNames("+ovh +security");
-      // result = _hoot.FindDocumentFileNames("ovh security");
-      // result = _hoot.FindDocumentFileNames("ovh user");
-      // result = _hoot.FindDocumentFileNames("+ovh +user");
-      // result = _hoot.FindDocumentFileNames("zabix");
-      // result = _hoot.FindDocumentFileNames("zabbix");
-
       try
       {
         List<string> results = await _searchService.QueryAsync(search).ConfigureAwait(false);
 
-        //_currentNote.OnNext($"# Search({search}) not implemented yet! Comming soon! :)");
+        StringBuilder sb = new StringBuilder();
+        string[] compiledFilter = CompileFilter(search);
+
+        sb.AppendLine($"# Search Results");
+        sb.AppendLine();
+        foreach(string note in results)
+        {
+          sb.AppendLine($"* [{Path.GetFileName(note)}]({GetRelativeFilePathName(note, _notesPath)})");
+
+          List<string> fileSearchResult = await GetSearchLines(note, compiledFilter).ConfigureAwait(false);
+          foreach(string s in fileSearchResult)
+          {
+            sb.AppendLine($"  * {s}");
+          }
+        }
+
+        using(FileStream fs = new FileStream(Path.Combine(_notesPath, "searchResult.md"), FileMode.Create, FileAccess.ReadWrite))
+        using(StreamWriter sw = new StreamWriter(fs))
+        {
+          await sw.WriteAsync(sb.ToString()).ConfigureAwait(false);
+        }
+
+        await LoadLinkAsync("searchResult.md").ConfigureAwait(false);
       }
       catch(Exception ex)
       {
@@ -275,6 +290,47 @@ namespace yawna.Service
       }
 
       return file;
+    }
+    private string[] CompileFilter(string filter)
+    {
+      string simplifiedFilter = filter
+        .Replace("+", "")
+        .Replace("-", "")
+        .Replace("*", "")
+        .Replace("?", "");
+
+      return simplifiedFilter.Split(" ");
+    }
+    private string GetRelativeFilePathName(string absoluteFilePathName, string notesPath)
+    {
+      string relativePathFileName = absoluteFilePathName
+        .Replace(Path.GetFullPath(notesPath), "")
+        .Replace(@"\", "/")
+        .Substring(1);
+
+      return relativePathFileName;
+    }
+    private static async Task<List<string>> GetSearchLines(string noteFilePathName, string[] filter)
+    {
+      List<string> results = new List<string>();
+
+      string? line;
+      using(FileStream fs = new FileStream(noteFilePathName, FileMode.Open, FileAccess.Read))
+      using(StreamReader sr = new StreamReader(fs))
+      {
+        line = await sr.ReadLineAsync().ConfigureAwait(false);
+        while(line != null)
+        {
+          if(filter.Where(i => line.Contains(i, StringComparison.OrdinalIgnoreCase)).Any() == true)
+          {
+            results.Add(line.Replace("*","").Replace("#", ""));
+          }
+
+          line = await sr.ReadLineAsync().ConfigureAwait(false);
+        }
+      }
+
+      return results;
     }
   }
 }

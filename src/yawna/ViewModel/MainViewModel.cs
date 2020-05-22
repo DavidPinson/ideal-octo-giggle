@@ -74,8 +74,8 @@ namespace yawna.ViewModel
 
       Locator.CurrentMutable.RegisterConstant<IScreen>(this);
       Locator.CurrentMutable.RegisterConstant<IConfigService>(new ConfigService());
-      Locator.CurrentMutable.RegisterConstant<INoteService>(new NoteService(Locator.Current.GetService<IConfigService>()));
       Locator.CurrentMutable.RegisterConstant<ISearchService>(new SearchService(Locator.Current.GetService<IConfigService>()));
+      Locator.CurrentMutable.RegisterConstant<INoteService>(new NoteService(Locator.Current.GetService<IConfigService>(), Locator.Current.GetService<ISearchService>()));
 
       Locator.CurrentMutable.Register<EditViewModel>(() =>
       {
