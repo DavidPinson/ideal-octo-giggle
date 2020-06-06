@@ -4,9 +4,9 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
 using System.Threading.Tasks;
+using fastJSON;
 using yawna.Service.Interface;
 using yawna.ViewModel.Config;
-using fastJSON;
 
 namespace yawna.Service
 {
@@ -29,9 +29,9 @@ namespace yawna.Service
       string exePathFullName = Path.GetDirectoryName(currentAssem.Location);
       string configPathFileName = Path.Combine(exePathFullName, "config.json");
 
-      YawnaConfig yc =new YawnaConfig()
+      YawnaConfig yc = new YawnaConfig()
       {
-        NotesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"yawn\notes"),
+        NotesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"yawna\notes"),
         HomeNoteFileName = "index.md"
       };
 

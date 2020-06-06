@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using ReactiveUI;
 using yawna.Service.Interface;
 
@@ -31,6 +32,13 @@ namespace yawna.ViewModel
       _currentNoteMd = _noteService
         .CurrentNote
         .ToProperty(this, nameof(CurrentNoteMd), scheduler: RxApp.MainThreadScheduler);
+
+      InitNoteViewModelAsync();
+    }
+
+    private async Task InitNoteViewModelAsync()
+    {
+      await _noteService.ReloadCurrentNoteAsync().ConfigureAwait(false);
     }
   }
 }

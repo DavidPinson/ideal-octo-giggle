@@ -1,6 +1,8 @@
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using System.Threading;
 using System.Threading.Tasks;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -72,7 +74,8 @@ namespace yawna.ViewModel
 
       Locator.CurrentMutable.RegisterConstant<IScreen>(this);
       Locator.CurrentMutable.RegisterConstant<IConfigService>(new ConfigService());
-      Locator.CurrentMutable.RegisterConstant<INoteService>(new NoteService(Locator.Current.GetService<IConfigService>()));
+      Locator.CurrentMutable.RegisterConstant<ISearchService>(new SearchService(Locator.Current.GetService<IConfigService>()));
+      Locator.CurrentMutable.RegisterConstant<INoteService>(new NoteService(Locator.Current.GetService<IConfigService>(), Locator.Current.GetService<ISearchService>()));
 
       Locator.CurrentMutable.Register<EditViewModel>(() =>
       {
