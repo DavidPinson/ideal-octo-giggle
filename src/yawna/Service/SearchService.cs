@@ -172,12 +172,7 @@ namespace yawna.Service
 
           using(await _lockHoot.LockAsync().ConfigureAwait(false))
           {
-            if(_hoot.IsIndexed(fileInfo.FullName) == true)
-            {
-              _hoot.RemoveDocument(fileInfo.FullName);
-              _hoot.Save();
-              _hoot.OptimizeIndex();
-            }
+            _hoot.RemoveDocument(fileInfo.FullName);
             _hoot.Index(new Document(fileInfo, fileContent), true);
           }
         }
@@ -192,7 +187,6 @@ namespace yawna.Service
         using(await _lockHoot.LockAsync().ConfigureAwait(false))
         {
           _hoot.Save();
-          _hoot.OptimizeIndex();
           _hoot.Shutdown();
           _hoot = null;
           await Task.Delay(2000).ConfigureAwait(false);
