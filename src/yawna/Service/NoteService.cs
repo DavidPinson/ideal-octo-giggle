@@ -110,8 +110,17 @@ namespace yawna.Service
 
             using(await _lock.LockAsync().ConfigureAwait(false))
             {
-              _notes.Add(filePathName);
-              _currentNoteIndex = _notes.Count - 1;
+              if(_notes.Count == 0 || _currentNoteIndex == _notes.Count - 1)
+              {
+                _notes.Add(filePathName);
+                _currentNoteIndex = _notes.Count - 1;
+              }
+              else
+              {
+                _currentNoteIndex++;
+                _notes[_currentNoteIndex] = filePathName;
+                _notes.RemoveRange(_currentNoteIndex + 1, _notes.Count - (_currentNoteIndex + 1));
+              }
 
               _message.OnNext($"NoteService - LoadLinkAsync(string link): Open existing note({link})");
               await LoadNoteAtCurrentIndex().ConfigureAwait(false);
@@ -323,7 +332,7 @@ namespace yawna.Service
         {
           if(filter.Where(i => line.Contains(i, StringComparison.OrdinalIgnoreCase)).Any() == true)
           {
-            results.Add(line.Replace("*","").Replace("#", ""));
+            results.Add(line.Replace("*", "").Replace("#", ""));
           }
 
           line = await sr.ReadLineAsync().ConfigureAwait(false);
